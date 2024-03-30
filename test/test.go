@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"net"
+	"time"
 )
 
 func main() {
@@ -28,6 +29,8 @@ func server(c net.Conn) {
 	if err != nil {
 		panic(err)
 	}
+
+	c.SetReadDeadline(time.Now().Add(5 * time.Second))
 
 	msgSize := make([]byte, size)
 	_, err = c.Read(msgSize)

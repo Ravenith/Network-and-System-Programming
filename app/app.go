@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"time"
 )
 
 func menu() {
@@ -30,11 +31,13 @@ func sendMessage() {
 	scanner.Scan()
 	message = scanner.Text()
 
-	sC, err := net.Dial("tcp", "127.0.0.1:9595")
+	sC, err := net.DialTimeout("tcp", "127.0.0.1:9595", 5*time.Second)
 	if err != nil {
 		panic(err)
 	}
 	defer sC.Close()
+
+	sC.SetWriteDeadline(time.Now().Add(5 * time.Second))
 
 	err = binary.Write(sC, binary.LittleEndian, uint32(len(message)))
 	if err != nil {
